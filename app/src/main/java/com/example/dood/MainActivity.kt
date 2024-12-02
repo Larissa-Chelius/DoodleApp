@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         brushSizeSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val brushSize = (progress + 1).toFloat() // Add 1 to avoid 0 width
-                doodleView?.setBrushSize(brushSize)
+                doodleView?.setBrushSize(brushSize) // Update the brush size
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         opacitySeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val opacity = progress / 100f // Convert to 0-1 range
-                doodleView?.setOpacity(opacity)
+                doodleView?.setOpacity(opacity) // Update the opacity
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("Pick a color")
         builder.setItems(colors) { dialog: DialogInterface, which: Int ->
             val selectedColor = colorValues[which]
-            doodleView?.setBrushColor(selectedColor)
+            doodleView?.setBrushColor(selectedColor) // Update the brush color
         }
 
         builder.create().show()

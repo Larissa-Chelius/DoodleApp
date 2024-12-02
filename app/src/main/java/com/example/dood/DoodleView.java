@@ -16,9 +16,13 @@ public class DoodleView extends View {
     private ArrayList<ArrayList<Float>> strokesX;  // List of X coordinates for all strokes
     private ArrayList<ArrayList<Float>> strokesY;  // List of Y coordinates for all strokes
     private ArrayList<Integer> strokeColors;        // List of colors for each stroke
+    private ArrayList<Float> strokeOpacities;       // List of opacities for each stroke
+    private ArrayList<Float> strokeWidths;          // List of brush widths for each stroke
     private ArrayList<Float> currentStrokeX;        // Current stroke X coordinates
     private ArrayList<Float> currentStrokeY;        // Current stroke Y coordinates
-    private int brushColor = Color.BLACK;           // Default color
+    private int brushColor = Color.BLACK;
+    private int currentAlpha = 255; // Default to fully opaque (255)
+    private float currentBrushWidth = 8f; // Default brush width
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,7 +34,7 @@ public class DoodleView extends View {
         paint = new Paint();
         paint.setColor(brushColor); // Set default color
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(8);
+        paint.setStrokeWidth(currentBrushWidth);
         paint.setAntiAlias(true);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);
@@ -38,6 +42,8 @@ public class DoodleView extends View {
         strokesX = new ArrayList<>();
         strokesY = new ArrayList<>();
         strokeColors = new ArrayList<>();
+        strokeOpacities = new ArrayList<>(); // Initialize the list to store stroke opacities
+        strokeWidths = new ArrayList<>(); // Initialize the list to store stroke widths
         currentStrokeX = new ArrayList<>();  // Initialize current stroke X coordinates
         currentStrokeY = new ArrayList<>();  // Initialize current stroke Y coordinates
     }
@@ -46,9 +52,11 @@ public class DoodleView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // Draw each stroke with its respective color
+        // Draw each stroke with its respective color, opacity, and width
         for (int i = 0; i < strokesX.size(); i++) {
             paint.setColor(strokeColors.get(i)); // Set color for each stroke
+            paint.setAlpha((int) (strokeOpacities.get(i) * 255)); // Apply stored opacity for each stroke
+            paint.setStrokeWidth(strokeWidths.get(i)); // Apply stored width for each stroke
             ArrayList<Float> strokeX = strokesX.get(i);
             ArrayList<Float> strokeY = strokesY.get(i);
             for (int j = 1; j < strokeX.size(); j++) {
@@ -61,6 +69,8 @@ public class DoodleView extends View {
         }
 
         // Draw the current stroke while the user is touching
+        paint.setAlpha(currentAlpha);  // Ensure current stroke uses the updated alpha
+        paint.setStrokeWidth(currentBrushWidth);  // Apply the current brush width
         for (int i = 1; i < currentStrokeX.size(); i++) {
             float startX = currentStrokeX.get(i - 1);
             float startY = currentStrokeY.get(i - 1);
@@ -74,20 +84,23 @@ public class DoodleView extends View {
         strokesX.clear();
         strokesY.clear();
         strokeColors.clear();
+        strokeOpacities.clear();  // Clear the opacity list
+        strokeWidths.clear();     // Clear the stroke width list
         currentStrokeX.clear();
         currentStrokeY.clear();
         invalidate(); // Redraw the view
     }
 
     public void setBrushSize(float size) {
-        paint.setStrokeWidth(size);
+        currentBrushWidth = size;
+        invalidate();
     }
 
     public void setOpacity(float opacity) {
-        paint.setAlpha((int) (opacity * 255));
+        currentAlpha = (int) (opacity * 255);
+        invalidate();
     }
 
-    // Method to set the brush color
     public void setBrushColor(int color) {
         brushColor = color; // Update the brush color
         paint.setColor(color); // Apply the color to the paint object
@@ -105,6 +118,10 @@ public class DoodleView extends View {
                 currentStrokeY = new ArrayList<>();
                 // Add new stroke's color
                 strokeColors.add(brushColor);
+                // Add the current opacity for the new stroke
+                strokeOpacities.add(currentAlpha / 255f); // Store the opacity for this stroke
+                // Add the current brush width for the new stroke
+                strokeWidths.add(currentBrushWidth); // Store the width for this stroke
                 // Add the first point of the stroke
                 currentStrokeX.add(x);
                 currentStrokeY.add(y);
