@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Tool Panel -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear Sketch" />
+
+        <SeekBar
+            android:id="@+id/seekBarBrushSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Color" />
+
+        <SeekBar
+            android:id="@+id/seekBarOpacity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- Doodle Canvas -->
+    <com.example.dood.DoodleView
+        android:id="@+id/doodleCanvas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#FFFFFF" />
+
+    <!-- Title Bar at the Bottom -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/titleBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dood"
+            android:textSize="20sp"
+            android:textColor="#fff"
+            android:layout_gravity="center"
+            android:padding="16dp" />
+    </androidx.appcompat.widget.Toolbar>
+
+</LinearLayout>
