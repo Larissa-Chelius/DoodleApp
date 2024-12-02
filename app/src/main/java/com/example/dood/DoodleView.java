@@ -2,12 +2,11 @@ package com.example.dood;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
-import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -16,6 +15,7 @@ public class DoodleView extends View {
     private Paint paint;
     private ArrayList<Float> pointsX;
     private ArrayList<Float> pointsY;
+    private int brushColor = Color.BLACK; // Default color
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -25,9 +25,12 @@ public class DoodleView extends View {
     private void init() {
         // Initialize Paint for drawing
         paint = new Paint();
-        paint.setColor(0xFF000000); // Default color: black
+        paint.setColor(brushColor); // Set default color
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(8);
+        paint.setAntiAlias(true);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
 
         // Initialize points lists
         pointsX = new ArrayList<>();
@@ -35,7 +38,7 @@ public class DoodleView extends View {
     }
 
     @Override
-    protected void onDraw(@NonNull Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         // Draw all points as lines
@@ -62,7 +65,9 @@ public class DoodleView extends View {
         paint.setAlpha((int) (opacity * 255));
     }
 
+    // Method to set the brush color
     public void setBrushColor(int color) {
+        brushColor = color;
         paint.setColor(color);
     }
 
@@ -81,4 +86,5 @@ public class DoodleView extends View {
         return true; // Indicate that the touch event was handled
     }
 }
+
 

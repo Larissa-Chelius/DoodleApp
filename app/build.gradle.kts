@@ -40,7 +40,8 @@ android {
 }
 
 dependencies {
-
+    implementation (libs.core.v330)
+    implementation (libs.color.v330)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -1,9 +1,12 @@
 package com.example.dood
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import android.content.DialogInterface
 
 class MainActivity : AppCompatActivity() {
     private var doodleView: DoodleView? = null
@@ -51,9 +54,28 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
-        // Set up Color Button (you can implement a color picker later)
+        // Set up Color Button with native color picker dialog
         colorButton?.setOnClickListener {
-            doodleView?.setBrushColor(-0x10000) // Example: Red
+            showColorPickerDialog()
         }
+    }
+
+    private fun showColorPickerDialog() {
+        val colors = arrayOf(
+            "Red", "Green", "Blue", "Yellow", "Black"
+        )
+
+        val colorValues = intArrayOf(
+            Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK
+        )
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Pick a color")
+        builder.setItems(colors) { dialog: DialogInterface, which: Int ->
+            val selectedColor = colorValues[which]
+            doodleView?.setBrushColor(selectedColor)
+        }
+
+        builder.create().show()
     }
 }

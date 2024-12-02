@@ -1,5 +1,10 @@
 [versions]
 agp = "8.7.2"
+androidColorpicker = "1.0.0"
+color = "3.3.0"
+colorpicker = "0.0.13"
+core = "0.9.6.0"
+coreVersion = "3.3.0"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -11,7 +16,13 @@ composeBom = "2024.04.01"
 appcompat = "1.7.0"
 
 [libraries]
+android-colorpicker = { module = "com.github.WhyNotHugo:Android-ColorPicker", version.ref = "androidColorpicker" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+color = { module = "com.afollestad.material-dialogs:color", version.ref = "core" }
+color-v330 = { module = "com.afollestad.material-dialogs:color", version.ref = "color" }
+colorpicker = { module = "com.github.QuadFlask:colorpicker", version.ref = "colorpicker" }
+core = { module = "com.afollestad.material-dialogs:core", version.ref = "core" }
+core-v330 = { module = "com.afollestad.material-dialogs:core", version.ref = "coreVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
