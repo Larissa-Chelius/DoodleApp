@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <!-- Save and Load Buttons -->
     <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
@@ -21,40 +23,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:gravity="center_horizontal">
 
         <Button
             android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clear Sketch" />
+            android:text="Clear Sketch"
+            android:layout_marginEnd="16dp"/>
 
         <SeekBar
             android:id="@+id/seekBarBrushSize"
-            android:layout_width="wrap_content"
-            android:paddingLeft="100dp"
-            android:paddingRight="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:max="255"
             android:progress="128"
             android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true" />
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"/>
 
         <Button
             android:id="@+id/btnColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Color" />
-
-        <SeekBar
-            android:id="@+id/seekBarOpacity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="100"
-            android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true" />
+            android:text="Color"
+            android:layout_marginStart="16dp"/>
     </LinearLayout>
+
+    <!-- Opacity SeekBar -->
+    <SeekBar
+        android:id="@+id/seekBarOpacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="100"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"/>
 
     <!-- Doodle Canvas -->
     <com.example.dood.DoodleView
@@ -64,12 +70,34 @@
         android:layout_weight="1"
         android:background="#FFFFFF" />
 
+    <!-- Undo and Redo Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end|bottom"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/undoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Undo"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/redoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Redo"/>
+
+    </LinearLayout>
+
     <!-- Title Bar at the Bottom -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         android:background="?attr/colorPrimary"
         android:elevation="4dp">
 

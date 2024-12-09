@@ -1,12 +1,13 @@
 package com.example.dood
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
-import android.content.DialogInterface
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     private var doodleView: DoodleView? = null
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     private var colorButton: Button? = null
     private var saveButton: Button? = null
     private var loadButton: Button? = null
+    private var undoButton: Button? = null
+    private var redoButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +33,13 @@ class MainActivity : AppCompatActivity() {
         colorButton = findViewById(R.id.btnColor)
         saveButton = findViewById(R.id.btnSave)
         loadButton = findViewById(R.id.btnLoad)
+        undoButton = findViewById(R.id.undoButton)
+        redoButton = findViewById(R.id.redoButton)
 
-        // Set up Clear Button functionality
+
         clearButton?.setOnClickListener { doodleView?.clearCanvas() }
 
-        // Set up Brush Size SeekBar
+
         brushSizeSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val brushSize = (progress + 1).toFloat()
@@ -46,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
-        // Set up Opacity SeekBar
+
         opacitySeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val opacity = progress / 100f
@@ -58,17 +63,25 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
+
         colorButton?.setOnClickListener {
             showColorPickerDialog()
         }
-        // Set up Save Button functionality
+
         saveButton?.setOnClickListener {
             doodleView?.saveDrawing()
         }
 
-        // Set up Load Button functionality
         loadButton?.setOnClickListener {
             doodleView?.loadDrawing()
+        }
+
+        undoButton?.setOnClickListener {
+            doodleView?.undo()
+        }
+
+        redoButton?.setOnClickListener {
+            doodleView?.redo()
         }
     }
 

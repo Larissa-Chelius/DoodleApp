@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -29,22 +28,30 @@ public class DoodleView extends View {
     private int brushColor = Color.BLACK;
     private int currentAlpha = 255;
     private float currentBrushWidth = 8f;
-    private static final String SAVE_FILE_NAME = "doodle.json";
+
+    // Stack for undo/redo functionality
+    private ArrayList<StrokeData> undoStack = new ArrayList<>();
+    private ArrayList<StrokeData> redoStack = new ArrayList<>();
+
+    private static class StrokeData {
+        ArrayList<Float> strokeX;
+        ArrayList<Float> strokeY;
+        int color;
+        float opacity;
+        float width;
+
+        StrokeData(ArrayList<Float> strokeX, ArrayList<Float> strokeY, int color, float opacity, float width) {
+            this.strokeX = strokeX;
+            this.strokeY = strokeY;
+            this.color = color;
+            this.opacity = opacity;
+            this.width = width;
+        }
+    }
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
-    }
-
-    private void init() {
         paint = new Paint();
-        paint.setColor(brushColor);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(currentBrushWidth);
-        paint.setAntiAlias(true);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-
         strokesX = new ArrayList<>();
         strokesY = new ArrayList<>();
         strokeColors = new ArrayList<>();
@@ -52,6 +59,13 @@ public class DoodleView extends View {
         strokeWidths = new ArrayList<>();
         currentStrokeX = new ArrayList<>();
         currentStrokeY = new ArrayList<>();
+
+        paint.setColor(brushColor);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(currentBrushWidth);
+        paint.setAntiAlias(true);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
     }
 
     @Override
@@ -62,17 +76,18 @@ public class DoodleView extends View {
             paint.setColor(strokeColors.get(i));
             paint.setAlpha((int) (strokeOpacities.get(i) * 255));
             paint.setStrokeWidth(strokeWidths.get(i));
-            ArrayList<Float> strokeX = strokesX.get(i);
-            ArrayList<Float> strokeY = strokesY.get(i);
-            for (int j = 1; j < strokeX.size(); j++) {
-                float startX = strokeX.get(j - 1);
-                float startY = strokeY.get(j - 1);
-                float stopX = strokeX.get(j);
-                float stopY = strokeY.get(j);
+            ArrayList<Float> strokeXList = strokesX.get(i);
+            ArrayList<Float> strokeYList = strokesY.get(i);
+            for (int j = 1; j < strokeXList.size(); j++) {
+                float startX = strokeXList.get(j - 1);
+                float startY = strokeYList.get(j - 1);
+                float stopX = strokeXList.get(j);
+                float stopY = strokeYList.get(j);
                 canvas.drawLine(startX, startY, stopX, stopY, paint);
             }
         }
 
+        // Draw the current stroke
         paint.setAlpha(currentAlpha);
         paint.setStrokeWidth(currentBrushWidth);
         for (int i = 1; i < currentStrokeX.size(); i++) {
@@ -119,9 +134,6 @@ public class DoodleView extends View {
             case MotionEvent.ACTION_DOWN:
                 currentStrokeX = new ArrayList<>();
                 currentStrokeY = new ArrayList<>();
-                strokeColors.add(brushColor);
-                strokeOpacities.add(currentAlpha / 255f);
-                strokeWidths.add(currentBrushWidth);
                 currentStrokeX.add(x);
                 currentStrokeY.add(y);
                 break;
@@ -133,12 +145,57 @@ public class DoodleView extends View {
                 break;
 
             case MotionEvent.ACTION_UP:
+
                 strokesX.add(currentStrokeX);
                 strokesY.add(currentStrokeY);
+                strokeColors.add(brushColor);
+                strokeOpacities.add(currentAlpha / 255f);
+                strokeWidths.add(currentBrushWidth);
+
+
+                undoStack.add(new StrokeData(currentStrokeX, currentStrokeY, brushColor, currentAlpha / 255f, currentBrushWidth));
+
+                redoStack.clear();
+
+                currentStrokeX = new ArrayList<>();
+                currentStrokeY = new ArrayList<>();
+                invalidate();
                 break;
         }
 
         return true;
+    }
+
+    public void undo() {
+        if (!undoStack.isEmpty()) {
+
+            StrokeData lastStroke = undoStack.remove(undoStack.size() - 1);
+            strokesX.remove(strokesX.size() - 1);
+            strokesY.remove(strokesY.size() - 1);
+            strokeColors.remove(strokeColors.size() - 1);
+            strokeOpacities.remove(strokeOpacities.size() - 1);
+            strokeWidths.remove(strokeWidths.size() - 1);
+
+
+            redoStack.add(lastStroke);
+
+            invalidate();
+        }
+    }
+
+    public void redo() {
+        if (!redoStack.isEmpty()) {
+            StrokeData lastStroke = redoStack.remove(redoStack.size() - 1);
+            strokesX.add(lastStroke.strokeX);
+            strokesY.add(lastStroke.strokeY);
+            strokeColors.add(lastStroke.color);
+            strokeOpacities.add(lastStroke.opacity);
+            strokeWidths.add(lastStroke.width);
+
+            undoStack.add(lastStroke);
+
+            invalidate();
+        }
     }
 
     public void saveDrawing() {
@@ -158,19 +215,18 @@ public class DoodleView extends View {
 
             drawingData.put("strokes", strokesArray);
 
-            FileOutputStream fos = getContext().openFileOutput(SAVE_FILE_NAME, Context.MODE_PRIVATE);
+            FileOutputStream fos = getContext().openFileOutput("doodle.json", Context.MODE_PRIVATE);
             fos.write(drawingData.toString().getBytes());
             fos.close();
 
-            Log.d("DoodleView", "Drawing saved successfully.");
         } catch (Exception e) {
-            Log.e("DoodleView", "Error saving drawing: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     public void loadDrawing() {
         try {
-            FileInputStream fis = getContext().openFileInput(SAVE_FILE_NAME);
+            FileInputStream fis = getContext().openFileInput("doodle.json");
             byte[] data = new byte[fis.available()];
             fis.read(data);
             fis.close();
@@ -206,9 +262,8 @@ public class DoodleView extends View {
             }
 
             invalidate();
-            Log.d("DoodleView", "Drawing loaded successfully.");
         } catch (Exception e) {
-            Log.e("DoodleView", "Error loading drawing: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
