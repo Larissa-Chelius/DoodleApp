@@ -1,40 +1,38 @@
-# Doodle App  
+# Doodle App - Drawing and Editing Application
 
-## Description  
-This project is an Android app that allows users to draw on a canvas with customizable brush sizes, colors, and opacity levels. Users can interact with the app by drawing strokes on the screen, clearing the canvas, and adjusting settings such as brush size and opacity.  
+## Description
+The Doodle App allows users to draw, erase, and edit sketches on a canvas. It includes features such as adjustable brush sizes, opacity control, color picking, and the ability to save and load drawings. Users can also undo and redo their drawing actions.
 
-## Features  
-- **Drawing**: Users can draw freehand strokes on the canvas using touch events.  
-- **Brush Size**: Adjustable via a slider.  
-- **Opacity**: Real-time control of stroke opacity via a slider.  
-- **Brush Color**: Select brush color using a predefined palette.  
-- **Clear Canvas**: A button to clear all drawings and reset the canvas.  
+## Features
+- **Brush Size Adjustment:** Modify the size of the brush using a SeekBar.
+- **Opacity Adjustment:** Control the opacity of your brush strokes using a SeekBar.
+- **Color Picker:** Choose a color for your brush from a list of predefined colors.
+- **Undo/Redo Actions:** Revert or redo your most recent drawing actions.
+- **Save/Load Drawings:** Save your current drawing to the device and load it later.
+- **Clear Canvas:** Clear the canvas to start over with a fresh drawing.
 
-## How to Run the App  
+## Requirements
+- **Android Studio**
+- **Java (for the DoodleView class)**
+- **Kotlin (for MainActivity)**
+- **Android 5.0 (Lollipop) or higher**
 
-### Prerequisites  
-1. Install **Android Studio** (latest version).  
-2. Install **Java Development Kit (JDK)** if not already installed.  
-3. Make sure the **Android SDK** is set up in Android Studio.  
-
-### Steps  
-1. **Clone the Repository**:  
-   Use the command below to clone the GitHub repository:  
+## Installation
+1. Clone the repository or download the source code:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
-2. **Open the cloned directory**:
-   In Android Studio via File > Open.
-3. **Sync Gradle**:
-   Allow Android Studio to sync the Gradle files and download dependencies.
+   git clone https://github.com/Larissa-Chelius/doodleApp.git
+2. Open the project in Android Studio.
+3. Sync the project with Gradle files.
+4. Build and run the app on an emulator or a physical device.
 
-4. **Run the App**:
-   - Set up an Android emulator or connect a physical Android device with developer mode enabled.
-   - Click the green "Run" button in Android Studio.
-     
-## Notes
-   - The app uses touch events to register drawing actions.
-   - Brush size and opacity are adjustable using sliders located on the app interface.
-   - Brush color can be changed by selecting from the color picker button.
+## Usage
+
+1. Open the app on your Android device or emulator.
+2. Use the toolbar buttons to adjust the brush size, opacity, and color.
+3. Use the canvas area to draw.
+4. Click **Clear** to erase the current drawing.
+5. Use **Save** to save your drawing and **Load** to retrieve a saved drawing.
+6. Click **Undo** or **Redo** to undo your last stroke or put back your last stroke.
 
 
 
