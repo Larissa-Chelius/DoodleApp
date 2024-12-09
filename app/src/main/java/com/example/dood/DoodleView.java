@@ -5,9 +5,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class DoodleView extends View {
@@ -23,6 +29,7 @@ public class DoodleView extends View {
     private int brushColor = Color.BLACK;
     private int currentAlpha = 255;
     private float currentBrushWidth = 8f;
+    private static final String SAVE_FILE_NAME = "doodle.json";
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,7 +37,6 @@ public class DoodleView extends View {
     }
 
     private void init() {
-        // Initialize Paint for drawing
         paint = new Paint();
         paint.setColor(brushColor);
         paint.setStyle(Paint.Style.STROKE);
@@ -133,5 +139,76 @@ public class DoodleView extends View {
         }
 
         return true;
+    }
+
+    public void saveDrawing() {
+        try {
+            JSONObject drawingData = new JSONObject();
+            JSONArray strokesArray = new JSONArray();
+
+            for (int i = 0; i < strokesX.size(); i++) {
+                JSONObject stroke = new JSONObject();
+                stroke.put("color", strokeColors.get(i));
+                stroke.put("opacity", strokeOpacities.get(i));
+                stroke.put("width", strokeWidths.get(i));
+                stroke.put("xPoints", new JSONArray(strokesX.get(i)));
+                stroke.put("yPoints", new JSONArray(strokesY.get(i)));
+                strokesArray.put(stroke);
+            }
+
+            drawingData.put("strokes", strokesArray);
+
+            FileOutputStream fos = getContext().openFileOutput(SAVE_FILE_NAME, Context.MODE_PRIVATE);
+            fos.write(drawingData.toString().getBytes());
+            fos.close();
+
+            Log.d("DoodleView", "Drawing saved successfully.");
+        } catch (Exception e) {
+            Log.e("DoodleView", "Error saving drawing: " + e.getMessage());
+        }
+    }
+
+    public void loadDrawing() {
+        try {
+            FileInputStream fis = getContext().openFileInput(SAVE_FILE_NAME);
+            byte[] data = new byte[fis.available()];
+            fis.read(data);
+            fis.close();
+
+            String jsonData = new String(data);
+            JSONObject drawingData = new JSONObject(jsonData);
+            JSONArray strokesArray = drawingData.getJSONArray("strokes");
+
+            strokesX.clear();
+            strokesY.clear();
+            strokeColors.clear();
+            strokeOpacities.clear();
+            strokeWidths.clear();
+
+            for (int i = 0; i < strokesArray.length(); i++) {
+                JSONObject stroke = strokesArray.getJSONObject(i);
+
+                ArrayList<Float> xPoints = new ArrayList<>();
+                ArrayList<Float> yPoints = new ArrayList<>();
+                JSONArray xArray = stroke.getJSONArray("xPoints");
+                JSONArray yArray = stroke.getJSONArray("yPoints");
+
+                for (int j = 0; j < xArray.length(); j++) {
+                    xPoints.add((float) xArray.getDouble(j));
+                    yPoints.add((float) yArray.getDouble(j));
+                }
+
+                strokesX.add(xPoints);
+                strokesY.add(yPoints);
+                strokeColors.add(stroke.getInt("color"));
+                strokeOpacities.add((float) stroke.getDouble("opacity"));
+                strokeWidths.add((float) stroke.getDouble("width"));
+            }
+
+            invalidate();
+            Log.d("DoodleView", "Drawing loaded successfully.");
+        } catch (Exception e) {
+            Log.e("DoodleView", "Error loading drawing: " + e.getMessage());
+        }
     }
 }
