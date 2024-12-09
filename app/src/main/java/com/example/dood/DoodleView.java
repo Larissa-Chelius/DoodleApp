@@ -145,16 +145,16 @@ public class DoodleView extends View {
                 break;
 
             case MotionEvent.ACTION_UP:
-                // Add the stroke to the list of strokes
+
                 strokesX.add(currentStrokeX);
                 strokesY.add(currentStrokeY);
                 strokeColors.add(brushColor);
                 strokeOpacities.add(currentAlpha / 255f);
                 strokeWidths.add(currentBrushWidth);
 
-                // Save the current stroke to the undo stack
+
                 undoStack.add(new StrokeData(currentStrokeX, currentStrokeY, brushColor, currentAlpha / 255f, currentBrushWidth));
-                // Clear the redo stack
+
                 redoStack.clear();
 
                 currentStrokeX = new ArrayList<>();
@@ -168,7 +168,7 @@ public class DoodleView extends View {
 
     public void undo() {
         if (!undoStack.isEmpty()) {
-            // Pop the last stroke from the undo stack and remove it from the main lists
+
             StrokeData lastStroke = undoStack.remove(undoStack.size() - 1);
             strokesX.remove(strokesX.size() - 1);
             strokesY.remove(strokesY.size() - 1);
@@ -176,7 +176,7 @@ public class DoodleView extends View {
             strokeOpacities.remove(strokeOpacities.size() - 1);
             strokeWidths.remove(strokeWidths.size() - 1);
 
-            // Push the stroke onto the redo stack for future redo
+
             redoStack.add(lastStroke);
 
             invalidate();
@@ -185,7 +185,6 @@ public class DoodleView extends View {
 
     public void redo() {
         if (!redoStack.isEmpty()) {
-            // Pop the last stroke from the redo stack and add it back to the main lists
             StrokeData lastStroke = redoStack.remove(redoStack.size() - 1);
             strokesX.add(lastStroke.strokeX);
             strokesY.add(lastStroke.strokeY);
@@ -193,7 +192,6 @@ public class DoodleView extends View {
             strokeOpacities.add(lastStroke.opacity);
             strokeWidths.add(lastStroke.width);
 
-            // Push the stroke onto the undo stack for future undo
             undoStack.add(lastStroke);
 
             invalidate();

@@ -36,10 +36,10 @@ class MainActivity : AppCompatActivity() {
         undoButton = findViewById(R.id.undoButton)
         redoButton = findViewById(R.id.redoButton)
 
-        // Set up Clear Button functionality
+
         clearButton?.setOnClickListener { doodleView?.clearCanvas() }
 
-        // Set up Brush Size SeekBar
+
         brushSizeSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val brushSize = (progress + 1).toFloat()
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
-        // Set up Opacity SeekBar
+
         opacitySeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val opacity = progress / 100f
@@ -63,29 +63,25 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
-        // Set up Color Picker Dialog
+
         colorButton?.setOnClickListener {
             showColorPickerDialog()
         }
 
-        // Set up Save Button functionality
         saveButton?.setOnClickListener {
             doodleView?.saveDrawing()
         }
 
-        // Set up Load Button functionality
         loadButton?.setOnClickListener {
             doodleView?.loadDrawing()
         }
 
-        // Set up Undo Button functionality
         undoButton?.setOnClickListener {
-            doodleView?.undo() // Call the undo method in DoodleView
+            doodleView?.undo()
         }
 
-        // Set up Redo Button functionality
         redoButton?.setOnClickListener {
-            doodleView?.redo() // Call the redo method in DoodleView
+            doodleView?.redo()
         }
     }
 
