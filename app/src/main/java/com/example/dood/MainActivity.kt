@@ -14,6 +14,8 @@ class MainActivity : AppCompatActivity() {
     private var opacitySeekBar: SeekBar? = null
     private var clearButton: Button? = null
     private var colorButton: Button? = null
+    private var saveButton: Button? = null
+    private var loadButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         opacitySeekBar = findViewById(R.id.seekBarOpacity)
         clearButton = findViewById(R.id.btnClear)
         colorButton = findViewById(R.id.btnColor)
+        saveButton = findViewById(R.id.btnSave)
+        loadButton = findViewById(R.id.btnLoad)
 
         // Set up Clear Button functionality
         clearButton?.setOnClickListener { doodleView?.clearCanvas() }
@@ -56,6 +60,15 @@ class MainActivity : AppCompatActivity() {
 
         colorButton?.setOnClickListener {
             showColorPickerDialog()
+        }
+        // Set up Save Button functionality
+        saveButton?.setOnClickListener {
+            doodleView?.saveDrawing()
+        }
+
+        // Set up Load Button functionality
+        loadButton?.setOnClickListener {
+            doodleView?.loadDrawing()
         }
     }
 
