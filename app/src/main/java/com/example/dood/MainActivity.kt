@@ -1,12 +1,13 @@
 package com.example.dood
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
-import android.content.DialogInterface
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     private var doodleView: DoodleView? = null
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     private var colorButton: Button? = null
     private var saveButton: Button? = null
     private var loadButton: Button? = null
+    private var undoButton: Button? = null
+    private var redoButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,8 @@ class MainActivity : AppCompatActivity() {
         colorButton = findViewById(R.id.btnColor)
         saveButton = findViewById(R.id.btnSave)
         loadButton = findViewById(R.id.btnLoad)
+        undoButton = findViewById(R.id.undoButton)
+        redoButton = findViewById(R.id.redoButton)
 
         // Set up Clear Button functionality
         clearButton?.setOnClickListener { doodleView?.clearCanvas() }
@@ -58,9 +63,11 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
+        // Set up Color Picker Dialog
         colorButton?.setOnClickListener {
             showColorPickerDialog()
         }
+
         // Set up Save Button functionality
         saveButton?.setOnClickListener {
             doodleView?.saveDrawing()
@@ -69,6 +76,16 @@ class MainActivity : AppCompatActivity() {
         // Set up Load Button functionality
         loadButton?.setOnClickListener {
             doodleView?.loadDrawing()
+        }
+
+        // Set up Undo Button functionality
+        undoButton?.setOnClickListener {
+            doodleView?.undo() // Call the undo method in DoodleView
+        }
+
+        // Set up Redo Button functionality
+        redoButton?.setOnClickListener {
+            doodleView?.redo() // Call the redo method in DoodleView
         }
     }
 
